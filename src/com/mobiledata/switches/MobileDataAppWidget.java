@@ -1,3 +1,4 @@
+
 package com.mobiledata.switches;
 
 import java.lang.reflect.Method;
@@ -15,91 +16,83 @@ import android.widget.RemoteViews;
 
 public class MobileDataAppWidget extends AppWidgetProvider {
     public static final String TAG = "MobileDataAppWidget";
+
     private static final String MOBILE_DATA_CHANGED = "com.mobledata.switches.MOBILE_DATA_CHANGED";
+
+    private Intent mLaunchIntent = new Intent();
 
     @Override
     public void onEnabled(Context context) {
         PackageManager pm = context.getPackageManager();
-        pm.setComponentEnabledSetting(new ComponentName(context,
-                MobileDataAppWidget.class),
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP);
+        pm.setComponentEnabledSetting(new ComponentName(context, MobileDataAppWidget.class),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
     }
 
     @Override
     public void onDisabled(Context context) {
         PackageManager pm = context.getPackageManager();
-        pm.setComponentEnabledSetting(new ComponentName(context,
-                MobileDataAppWidget.class),
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP);
+        pm.setComponentEnabledSetting(new ComponentName(context, MobileDataAppWidget.class),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "onReceive action = " + intent.getAction());
         RemoteViews view = new RemoteViews(context.getPackageName(),
                 R.layout.appwidget_mobiledataswitch);
 
         if (MOBILE_DATA_CHANGED.equals(intent.getAction())) {
-            ConnectivityManager cm = (ConnectivityManager) context
+            ConnectivityManager cm = (ConnectivityManager)context
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             boolean mobileDataEnabled = getMobileDataState(cm);
             try {
-                invokeBooleanArgMethod(cm, "setMobileDataEnabled",
-                        !mobileDataEnabled);
+                invokeBooleanArgMethod(cm, "setMobileDataEnabled", !mobileDataEnabled);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            updateView(!mobileDataEnabled, view);
+            updateView(context, !mobileDataEnabled, view);
         } else {
-            updateView(getMobileDataState(context), view);
+            updateView(context, getMobileDataState(context), view);
         }
 
-        AppWidgetManager appWidgetManager = AppWidgetManager
-                .getInstance(context);
-        appWidgetManager.updateAppWidget(new ComponentName(context,
-                MobileDataAppWidget.class), view);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        appWidgetManager.updateAppWidget(new ComponentName(context, MobileDataAppWidget.class),
+                view);
         super.onReceive(context, intent);
     }
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager,
-            int[] appWidgetIds) {
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         RemoteViews view = new RemoteViews(context.getPackageName(),
                 R.layout.appwidget_mobiledataswitch);
-        Intent launchIntent = new Intent();
-        launchIntent.setClass(context, MobileDataAppWidget.class);
-        launchIntent.setAction(MOBILE_DATA_CHANGED);
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, launchIntent,
-                0);
+
+        updateView(context, getMobileDataState(context), view);
+
+        appWidgetManager.updateAppWidget(new ComponentName(context, MobileDataAppWidget.class),
+                view);
+    }
+
+    private void updateView(Context context, boolean dataEnabled, RemoteViews view) {
+        mLaunchIntent.setClass(context, MobileDataAppWidget.class);
+        mLaunchIntent.setAction(MOBILE_DATA_CHANGED);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, mLaunchIntent, 0);
 
         view.setOnClickPendingIntent(R.id.mobiledataswitch, pi);
 
-        updateView(getMobileDataState(context), view);
-        Log.d(TAG, Integer.toString(appWidgetIds.length));
-
-        appWidgetManager.updateAppWidget(new ComponentName(context,
-                MobileDataAppWidget.class), view);
-    }
-
-    private void updateView(boolean dataEnabled, RemoteViews view) {
         if (dataEnabled) {
-            view.setImageViewResource(R.id.mobiledataswitch,
-                    R.drawable.appwidget_mobiledata_on);
+            view.setImageViewResource(R.id.mobiledataswitch, R.drawable.appwidget_mobiledata_on);
         } else {
-            view.setImageViewResource(R.id.mobiledataswitch,
-                    R.drawable.appwidget_mobiledata_off);
+            view.setImageViewResource(R.id.mobiledataswitch, R.drawable.appwidget_mobiledata_off);
         }
     }
 
     private boolean getMobileDataState(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context
+        ConnectivityManager cm = (ConnectivityManager)context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         boolean isMobileDataEnable = false;
         try {
             Object[] arg = null;
-            isMobileDataEnable = (Boolean) invokeMethod(cm,
-                    "getMobileDataEnabled", arg);
+            isMobileDataEnable = (Boolean)invokeMethod(cm, "getMobileDataEnabled", arg);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,16 +103,15 @@ public class MobileDataAppWidget extends AppWidgetProvider {
         boolean isMobileDataEnable = false;
         try {
             Object[] arg = null;
-            isMobileDataEnable = (Boolean) invokeMethod(cm,
-                    "getMobileDataEnabled", arg);
+            isMobileDataEnable = (Boolean)invokeMethod(cm, "getMobileDataEnabled", arg);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return isMobileDataEnable;
     }
 
-    public Object invokeMethod(ConnectivityManager cm, String methodName,
-            Object[] arg) throws Exception {
+    public Object invokeMethod(ConnectivityManager cm, String methodName, Object[] arg)
+            throws Exception {
         Class ownerClass = cm.getClass();
         Class[] argsClass = null;
         if (arg != null) {
@@ -132,8 +124,8 @@ public class MobileDataAppWidget extends AppWidgetProvider {
         return method.invoke(cm, arg);
     }
 
-    public Object invokeBooleanArgMethod(ConnectivityManager cm,
-            String methodName, boolean value) throws Exception {
+    public Object invokeBooleanArgMethod(ConnectivityManager cm, String methodName, boolean value)
+            throws Exception {
         Class ownerClass = cm.getClass();
 
         Class[] argsClass = new Class[1];
