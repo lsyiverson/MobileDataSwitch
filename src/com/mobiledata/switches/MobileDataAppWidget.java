@@ -51,6 +51,8 @@ public class MobileDataAppWidget extends AppWidgetProvider {
                 e.printStackTrace();
             }
             updateView(context, !mobileDataEnabled, view);
+        } else if ("com.lsyiverson.smc.MOBILE_DATA_CHANGED".equals(intent.getAction())) {
+            updateView(context, intent.getBooleanExtra("enabled", true), view);
         } else {
             updateView(context, getMobileDataState(context), view);
         }

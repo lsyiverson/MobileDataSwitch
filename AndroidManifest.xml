@@ -17,7 +17,6 @@
         android:label="@string/app_name" >
         <receiver
             android:name=".MobileDataAppWidget"
-            android:exported="false"
             android:icon="@drawable/appwidget_mobiledata_on"
             android:label="@string/widget_name" >
             <meta-data
@@ -28,6 +27,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="com.mobledata.switches.MOBILE_DATA_CHANGED" />
+                <action android:name="com.lsyiverson.smc.MOBILE_DATA_CHANGED" />
             </intent-filter>
         </receiver>
     </application>
