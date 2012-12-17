@@ -17,7 +17,9 @@ import android.widget.RemoteViews;
 public class MobileDataAppWidget extends AppWidgetProvider {
     public static final String TAG = "MobileDataAppWidget";
 
-    private static final String MOBILE_DATA_CHANGED = "com.mobledata.switches.MOBILE_DATA_CHANGED";
+    private static final String MOBILE_DATA_CHANGED = "com.lsyiverson.switches.MOBILE_DATA_CHANGED";
+
+    private static final String SMC_MOBILE_DATA_CHANGED = "com.lsyiverson.smc.MOBILE_DATA_CHANGED";
 
     private Intent mLaunchIntent = new Intent();
 
@@ -51,7 +53,7 @@ public class MobileDataAppWidget extends AppWidgetProvider {
                 e.printStackTrace();
             }
             updateView(context, !mobileDataEnabled, view);
-        } else if ("com.lsyiverson.smc.MOBILE_DATA_CHANGED".equals(intent.getAction())) {
+        } else if (SMC_MOBILE_DATA_CHANGED.equals(intent.getAction())) {
             updateView(context, intent.getBooleanExtra("enabled", true), view);
         } else {
             updateView(context, getMobileDataState(context), view);

@@ -26,7 +26,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="com.mobledata.switches.MOBILE_DATA_CHANGED" />
+                <action android:name="com.lsyiverson.switches.MOBILE_DATA_CHANGED" />
                 <action android:name="com.lsyiverson.smc.MOBILE_DATA_CHANGED" />
             </intent-filter>
         </receiver>
