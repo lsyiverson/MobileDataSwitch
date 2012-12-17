@@ -1,5 +1,5 @@
 
-package com.mobiledata.switches;
+package com.lsyiverson.switches;
 
 import java.lang.reflect.Method;
 
