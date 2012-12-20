@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">移动数据控制</string>
-    <string name="widget_name">移动数据开关</string>
+    <string name="app_name">数据流量控制</string>
+    <string name="widget_name">数据流量开关</string>
 
 </resources>
